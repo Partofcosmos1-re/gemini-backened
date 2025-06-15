@@ -16,10 +16,15 @@ app.post("/api/gemini", async (req, res) => {
     const r = await fetch(URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
     });
+
     const data = await r.json();
-    res.json(data);
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+    res.json({ response: text });
+
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: e.message });
